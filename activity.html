@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style type="text/css">
+        .standard-grid {
+            width: 100%;
+            border-top: 1px solid #b1b1b1;
+            border-right: 1px solid #b1b1b1;
+            border-spacing: 0;
+        }
+
+            .standard-grid th, .standard-grid td {
+                text-align: left;
+                border-bottom: 1px solid #b1b1b1;
+                border-left: 1px solid #b1b1b1;
+                padding: 4px;
+            }
+    </style>
+
+    <!-- Ignite UI Required Combined CSS Files -->
+    <link href="http://cdn-na.infragistics.com/igniteui/2014.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+    <link href="http://cdn-na.infragistics.com/igniteui/2014.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+
+    <script src="http://modernizr.com/downloads/modernizr-latest.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+
+    <!-- Ignite UI Required Combined JavaScript Files -->
+    <script src="js/infragistics.core.js"></script>
+    <script src="js/infragistics.lob.js"></script>
+
+</head>
+<body>
+    <table id="table">
+        <tbody></tbody>
+    </table>
+    <div id="grid"></div>
+
+    <script>
+
+        $(function () {
+            // Renders the table
+            var renderTable = function (success, error) {
+                var template = "<tr><td>${DateTimeStamp}</td><td>${UserName}</td><td>${Action}</td><td>${Description}</td></tr>";
+                if (success) {
+                    $("#table tbody").empty();
+                    $($.ig.tmpl(template, ds.dataView())).appendTo("#table tbody");
+                } else {
+                    alert(error);
+                }
+            }
+
+            // The $.ig.DataSchema is used to define the schema of the data
+            var oDataSchema = new $.ig.DataSchema("json", {
+                fields: [
+                    { name: "Action" },
+                    { name: "DateTimeStamp" },
+                    { name: "Description" },
+                    { name: "UserName" }
+                ],
+                searchField: ""
+            });
+
+            // service Url
+            var url = "http://localhost:8338/ActivityDetailsService.svc/json/activitydetails";
+            //var url = "http://mediahubactivity.cloudapp.net/ActivityDetailsService.svc/json/activitydetails";
+
+            var ds = new $.ig.DataSource({
+                type: "remoteUrl",
+                callback: renderTable,
+                dataSource: url,
+                schema: oDataSchema,
+                responseDataType: "jsonp",
+                responseContentType: "application/json; charset=utf-8"
+            });
+
+            //var data = [
+            //    {
+            //        "DateTimeStamp": "1970-01-02T15:16:39.2971849",
+            //        "UserName": "root",
+            //        "Action": "login",
+            //        "Description": "LOGIN: root from 10.247.164.5(10.247.164.5)"
+            //    },
+            //    {
+            //        "DateTimeStamp": "1970-01-02T15:19:50.3603586",
+            //        "UserName": "test_admin",
+            //        "Action": "login",
+            //        "Description": "LOGIN: test_admin from 134.113.19.82(134.113.19.82)"
+            //    }];
+
+            //var ds = new $.ig.DataSource({
+            //    callback: renderTable,
+            //    dataSource: data,
+            //    schema: oDataSchema,
+            //    responseDataType: "jsonp",
+            //    responseContentType: "application/json; charset=utf-8"
+            //});
+
+            // Binds to the underlying data
+            ds.dataBind();
+
+            $("#grid").igGrid({
+                dataSource: ds 
+            });
+        });
+
+    </script>
+
+</body>
+</html>

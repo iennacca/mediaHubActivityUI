@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style type="text/css">
+        .standard-grid {
+            width: 100%;
+            border-top: 1px solid #b1b1b1;
+            border-right: 1px solid #b1b1b1;
+            border-spacing: 0;
+        }
+
+            .standard-grid th, .standard-grid td {
+                text-align: left;
+                border-bottom: 1px solid #b1b1b1;
+                border-left: 1px solid #b1b1b1;
+                padding: 4px;
+            }
+    </style>
+
+    <!-- Ignite UI Required Combined CSS Files -->
+    <link href="http://cdn-na.infragistics.com/igniteui/2014.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
+    <link href="http://cdn-na.infragistics.com/igniteui/2014.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+
+    <script src="http://modernizr.com/downloads/modernizr-latest.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+
+    <!-- Ignite UI Required Combined JavaScript Files -->
+    <script src="js/infragistics.core.js"></script>
+    <script src="js/infragistics.lob.js"></script>
+
+</head>
+<body>
+    <div id="pivotView"></div>
+
+    <script>
+        $(function () {
+            // The $.ig.DataSchema is used to define the schema of the data
+            var oDataSchema = new $.ig.DataSchema("json", {
+                fields: [
+                    { name: "Action" },
+                    { name: "DateTimeStamp", type: "date" },
+                    { name: "Description" },
+                    { name: "UserName" }
+                ],
+                searchField: ""
+            });
+
+            // service Url
+            var url = "http://localhost:8338/ActivityDetailsService.svc/json/activitydetails";
+            //var url = "http://mediahubactivity.cloudapp.net/ActivityDetailsService.svc/json/activitydetails";
+
+            // This code creates an $.ig.DataSource bound to oData service
+            var ds = new $.ig.DataSource({
+                type: "remoteUrl",
+                dataSource: url,
+                schema: oDataSchema,
+                responseDataType: "jsonp",
+                responseContentType: "application/json; charset=utf-8"
+            });
+
+            var fieldCounter = function (items, cellMetadata) {
+                return (items.length);
+            };
+
+            $("#pivotView").igPivotView({
+                dataSourceOptions: {
+                    flatDataOptions: {
+                        dataSource: ds,
+                            metadata: {
+                            cube: {
+                                name: "mediaHubActivity",
+                                caption: "mediaHubActivity",
+                                measuresDimension: {
+                                    caption: "Measures",
+                                    measures: [ //for each measure, name and aggregator are required
+                                        { caption: "Count", name: "Count", aggregator: fieldCounter }
+                                    ]
+                                },
+                                dimensions: [ // for each dimension
+                                    {
+                                        caption: "Date", name: "Date", /*displayFolder: "Folder1\\Folder2",*/ hierarchies: [
+                                            $.ig.OlapUtilities.prototype.getDateHierarchy(
+                                                "DateTimeStamp", // the source property name
+                                                ["year", "quarter", "month", "date"], // the date parts for which levels will be generated (optional)
+                                                "Dates", // The name for the hierarchy (optional)
+                                                "Date", // The caption for the hierarchy (optional)
+                                                ["Year", "Quarter", "Month", "Day"], // the captions for the levels (optional)
+                                                "All Periods") // the root level caption (optional)
+                                        ]
+                                    },
+                                    {
+                                        caption: "LoginName", name: "LoginName", hierarchies: [{
+                                            caption: "LoginName", name: "LoginName", levels: [
+                                                {
+                                                    name: "AllNames", caption: "All LoginNames",
+                                                    memberProvider: function (item) { return "All LoginNames"; }
+                                                },
+                                                {
+                                                    name: "UserName", caption: "UserName",
+                                                    memberProvider: function (item) { return item.UserName; }
+                                                }]
+                                        }]
+                                    },
+                                    {
+                                        caption: "Action", name: "Action", hierarchies: [{
+                                            caption: "Action", name: "Action", levels: [
+                                                {
+                                                    name: "AllActions", caption: "All Actions",
+                                                    memberProvider: function (item) { return "All Actions"; }
+                                                },
+                                                {
+                                                    name: "Action", caption: "Action",
+                                                    memberProvider: function (item) { return item.Action; }
+                                                }]
+                                        }]
+                                    }]
+                            }
+                        }
+                    },
+                    // Preload hiearhies for the rows, columns, filters and measures
+                    rows: "[Date].[Dates]",
+                    columns: "[LoginName].[LoginName]",
+                    measures: "[Measures].[Count]"//,[Measures].[UnitPrice]"
+                }
+            });
+        });
+    </script>
+</body>
+</html>
