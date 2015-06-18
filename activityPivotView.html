@@ -19,8 +19,9 @@
     </style>
 
     <!-- Ignite UI Required Combined CSS Files -->
-    <link href="http://cdn-na.infragistics.com/igniteui/2014.2/latest/css/themes/infragistics/infragistics.theme.css" rel="stylesheet" />
-    <link href="http://cdn-na.infragistics.com/igniteui/2014.2/latest/css/structure/infragistics.css" rel="stylesheet" />
+    <link rel="stylesheet" href="http://designer.igniteui.com/packages/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="http://designer.igniteui.com/css/themes/infragistics/infragistics.theme.css">
+    <link rel="stylesheet" href="http://designer.igniteui.com/css/structure/infragistics.css">
 
     <script src="http://modernizr.com/downloads/modernizr-latest.js"></script>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -30,9 +31,17 @@
     <script src="js/infragistics.core.js"></script>
     <script src="js/infragistics.lob.js"></script>
 
+    <script src="http://designer.igniteui.com/js/datasources.js"></script>
 </head>
 <body>
-    <div id="pivotView"></div>
+    <div id="row1" class="row">
+        <div class="col-md-3">
+            <div id="hierarchicalGrid1"></div>
+        </div>
+        <div class="col-md-9">
+            <div id="pivotView"></div>
+        </div>
+    </div>
 
     <script>
         $(function () {
@@ -50,6 +59,11 @@
             // service Url
             var url = "http://localhost:8338/ActivityDetailsService.svc/json/activitydetails";
             //var url = "http://mediahubactivity.cloudapp.net/ActivityDetailsService.svc/json/activitydetails";
+
+            // debug
+            var urlref = document.createElement('a');
+            urlref.href = url;
+            document.title = urlref.hostname;
 
             // This code creates an $.ig.DataSource bound to oData service
             var ds = new $.ig.DataSource({
@@ -124,6 +138,12 @@
                     columns: "[LoginName].[LoginName]",
                     measures: "[Measures].[Count]"//,[Measures].[UnitPrice]"
                 }
+            });
+            $("#hierarchicalGrid1").igHierarchicalGrid({
+                features: [],
+                columnLayouts: [],
+                dataSource: sampleHierarchicalData1,
+                autoGenerateLayouts: true
             });
         });
     </script>

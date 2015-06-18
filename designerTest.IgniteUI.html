@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://designer.igniteui.com/packages/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="http://designer.igniteui.com/css/themes/infragistics/infragistics.theme.css">
+    <link rel="stylesheet" href="http://designer.igniteui.com/css/structure/infragistics.css">
+    <!--
+        Update the Ignite UI script references to your licensed copies before deploying.
+        Ignite UI License: http://www.infragistics.com/legal/license/ultimate/
+    -->
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.min.js"></script>
+    <script src="http://designer.igniteui.com/js/infragistics.core.js"></script>
+    <script src="http://designer.igniteui.com/js/infragistics.lob.js"></script>
+
+    <script src="http://designer.igniteui.com/js/datasources.js"></script>
+
+    <script id="code">
+        // The $.ig.DataSchema is used to define the schema of the data
+        var oDataSchema = new $.ig.DataSchema("json", {
+            fields: [
+                { name: "Action" },
+                { name: "DateTimeStamp" },
+                { name: "Description" },
+                { name: "UserName" }
+            ],
+            searchField: ""
+        });
+
+        // service Url
+        var url = "http://localhost:8338/ActivityDetailsService.svc/json/activitydetails";
+        //var url = "http://mediahubactivity.cloudapp.net/ActivityDetailsService.svc/json/activitydetails";
+
+        var ds = new $.ig.JSONDataSource({
+            type: "remoteUrl",
+            dataSource: url,
+            schema: oDataSchema,
+            responseDataType: "jsonp",
+            dataResponseKey: "",
+            responseContentType: "application/json; charset=utf-8"
+        });
+
+        ds.dataBind();
+
+        var lds = [
+            { "Action": "login", "DateTimeStamp": "\/Date(1419368399317-0500)\/", "Description": "LOGIN: jmchaves from 10.247.164.5(10.247.164.5)", "UserName": "jmchaves" },
+            { "Action": "login", "DateTimeStamp": "\/Date(1419367308182-0500)\/", "Description": "LOGIN: JChaves from 10.247.164.5(10.247.164.5)", "UserName": "JChaves" }
+        ];
+
+        $(document).ready(function () {
+            $("#grid1").igGrid({
+                dataSource: lds,
+                width: "100%",
+                height: "450",
+                renderCheckboxes: true,
+                autoGenerateColumns: false,
+                columns: [
+                    {
+                        key: "Action",
+                        headerText: "Active",
+                        width: "7%"
+                    },
+                    {
+                        key: "Description",
+                        headerText: "Description",
+                        width: "13%"
+                    },
+                    {
+                        key: "UserName",
+                        headerText: "Name",
+                        width: "20%"
+                    }
+                ],
+                features: [
+                    {
+                        name: "Filtering"
+                    },
+                    {
+                        name: "Paging",
+                        showPageSizeDropDown: false
+                    },
+                    {
+                        name: "Sorting"
+                    },
+                    {
+                        name: "Selection",
+                        inherit: true
+                    }
+                ]
+            });
+            $("#hierarchicalGrid1").igHierarchicalGrid({
+                features: [],
+                columnLayouts: [],
+                dataSource: sampleHierarchicalData1,
+                autoGenerateLayouts: true
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="row1" class="row">
+        <div class="col-md-3">
+            <div id="hierarchicalGrid1"></div>
+        </div>
+        <div class="col-md-9">
+            <div id="grid1"></div>
+        </div>
+    </div>
+</body>
+</html>

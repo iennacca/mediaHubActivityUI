@@ -63,8 +63,13 @@
             });
 
             // service Url
-            var url = "http://localhost:8338/ActivityDetailsService.svc/json/activitydetails";
-            //var url = "http://mediahubactivity.cloudapp.net/ActivityDetailsService.svc/json/activitydetails";
+            //var url = "http://localhost:8338/ActivityDetailsService.svc/json/activitydetails";
+            var url = "http://mediahubactivity.cloudapp.net/ActivityDetailsService.svc/json/activitydetails";
+
+            // debug
+            var urlref = document.createElement('a');
+            urlref.href = url;
+            document.title = urlref.hostname;
 
             var ds = new $.ig.DataSource({
                 type: "remoteUrl",
@@ -75,34 +80,9 @@
                 responseContentType: "application/json; charset=utf-8"
             });
 
-            //var data = [
-            //    {
-            //        "DateTimeStamp": "1970-01-02T15:16:39.2971849",
-            //        "UserName": "root",
-            //        "Action": "login",
-            //        "Description": "LOGIN: root from 10.247.164.5(10.247.164.5)"
-            //    },
-            //    {
-            //        "DateTimeStamp": "1970-01-02T15:19:50.3603586",
-            //        "UserName": "test_admin",
-            //        "Action": "login",
-            //        "Description": "LOGIN: test_admin from 134.113.19.82(134.113.19.82)"
-            //    }];
-
-            //var ds = new $.ig.DataSource({
-            //    callback: renderTable,
-            //    dataSource: data,
-            //    schema: oDataSchema,
-            //    responseDataType: "jsonp",
-            //    responseContentType: "application/json; charset=utf-8"
-            //});
-
             // Binds to the underlying data
             ds.dataBind();
 
-            $("#grid").igGrid({
-                dataSource: ds 
-            });
         });
 
     </script>

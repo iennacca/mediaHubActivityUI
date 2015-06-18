@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -33,12 +33,36 @@
     </style>
 </head>
 <body>
-    <script type="text/javascript" src="http://localhost:1024/SamplesBrowser/data-files/financial-indicators.js"></script>
-    <script type="text/javascript" src="http://localhost:1024/SamplesBrowser/data-files/financial-data.js"></script>
+    <script type="text/javascript" src="data/financial-data.js"></script>
+    <script type="text/javascript" src="data/financial-indicators.js"></script>
 
     <script type="text/javascript">
 
         $(function () {
+            // The $.ig.DataSchema is used to define the schema of the data
+            var oDataSchema = new $.ig.DataSchema("json", {
+                fields: [
+                    { name: "Action" },
+                    { name: "DateTimeStamp", type: "date" },
+                    { name: "Description" },
+                    { name: "UserName" }
+                ],
+                searchField: ""
+            });
+
+            // service Url
+            var url = "http://localhost:8338/ActivityDetailsService.svc/json/activitydetails";
+            //var url = "http://mediahubactivity.cloudapp.net/ActivityDetailsService.svc/json/activitydetails";
+
+            // This code creates an $.ig.DataSource bound to oData service
+            var ds = new $.ig.DataSource({
+                type: "remoteUrl",
+                dataSource: url,
+                schema: oDataSchema,
+                responseDataType: "jsonp",
+                responseContentType: "application/json; charset=utf-8"
+            });
+
             $("#priceChart").igDataChart({
                 width: "450px",
                 height: "400px",
